@@ -687,6 +687,9 @@ const questionnaireStyle = theme => ({
         paddingTop: theme.spacing(4),
       },
     },
+    datePickerError: {
+        paddingBottom: theme.spacing(2),
+    },
 });
 
 export default questionnaireStyle;
