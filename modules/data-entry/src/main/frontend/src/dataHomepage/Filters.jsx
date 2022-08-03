@@ -224,18 +224,6 @@ function Filters(props) {
     setFilterableUUIDs(uuids);
   }
 
-  let removeCreatedDateTimezone = (filters) => {
-    let newFilters = [];
-    filters.forEach( (filter) => {
-      if (filter.type === "createddate") {
-        newFilters.push({ ...filter, value: filter.value.split('T')[0]});
-      } else {
-        newFilters.push({ ...filter });
-      }
-    });
-    return newFilters;
-  };
-
   let addCreatedDateTimezone = (filters) => {
     const getClientTimezoneOffset = () => {
       const padTwo = (s) => {
@@ -253,7 +241,7 @@ function Filters(props) {
     let newFilters = [];
     filters.forEach( (filter) => {
       if (filter.type === "createddate") {
-        newFilters.push({ ...filter, value: filter.value + "T00:00:00" + getClientTimezoneOffset() });
+        newFilters.push({ ...filter, value: filter.value + getClientTimezoneOffset() });
       } else {
         newFilters.push({ ...filter });
       }
@@ -266,7 +254,6 @@ function Filters(props) {
     setDialogOpen(true);
     // Replace our defaults with a deep copy of what's actually active, plus an empty one
     let newFilters = deepCopyFilters(activeFilters);
-    newFilters = removeCreatedDateTimezone(newFilters);
     setEditingFilters(newFilters);
 
     // Bugfix: also reload every active outputChoice, in order to refresh its copy of the state variables
