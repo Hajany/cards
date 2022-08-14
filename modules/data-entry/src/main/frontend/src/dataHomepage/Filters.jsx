@@ -39,6 +39,7 @@ import TextFilter from "./FilterComponents/TextFilter.jsx";
 import SubjectFilter from "./FilterComponents/SubjectFilter.jsx";
 import QuestionnaireFilter from "./FilterComponents/QuestionnaireFilter.jsx";
 import ResourceFilter from "./FilterComponents/ResourceFilter.jsx";
+import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities.jsx";
 import { UNARY_COMPARATORS, TEXT_COMPARATORS } from "./FilterComponents/FilterComparators.jsx";
 
 const ALL_QUESTIONNAIRES_URL = "/Questionnaires.deep.json";
@@ -224,24 +225,23 @@ function Filters(props) {
     setFilterableUUIDs(uuids);
   }
 
-  let addCreatedDateTimezone = (filters) => {
-    const getClientTimezoneOffset = () => {
-      const padTwo = (s) => {
-        if (s.length < 2) {
-          return '0' + s;
-        }
-        return s;
-      };
-      let totalOffsetMinutes = new Date().getTimezoneOffset();
-      let offsetSign = (totalOffsetMinutes < 0) ? '+' : '-';
-      let offsetMinute = Math.abs(totalOffsetMinutes) % 60;
-      let offsetHour = Math.floor(Math.abs(totalOffsetMinutes) / 60);
-      return offsetSign + padTwo(offsetHour.toString()) + ":" + padTwo(offsetMinute.toString());
-    };
+  let removeCreatedDateTimezone = (filters) => {
     let newFilters = [];
     filters.forEach( (filter) => {
       if (filter.type === "createddate") {
-        newFilters.push({ ...filter, value: filter.value + getClientTimezoneOffset() });
+        newFilters.push({ ...filter, value: filter.value.split('T')[0]});
+      } else {
+        newFilters.push({ ...filter });
+      }
+    });
+    return newFilters;
+  };
+
+  let addCreatedDateTimezone = (filters) => {
+    let newFilters = [];
+    filters.forEach( (filter) => {
+      if (filter.type === "createddate") {
+        newFilters.push({ ...filter, value: filter.value + "T00:00:00" + DateQuestionUtilities.getClientTimezoneOffset() });
       } else {
         newFilters.push({ ...filter });
       }
@@ -254,6 +254,7 @@ function Filters(props) {
     setDialogOpen(true);
     // Replace our defaults with a deep copy of what's actually active, plus an empty one
     let newFilters = deepCopyFilters(activeFilters);
+    newFilters = removeCreatedDateTimezone(newFilters);
     setEditingFilters(newFilters);
 
     // Bugfix: also reload every active outputChoice, in order to refresh its copy of the state variables
