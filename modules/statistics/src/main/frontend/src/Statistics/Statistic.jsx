@@ -39,7 +39,7 @@ import {
 } from "recharts";
 
 import statisticsStyle from "./statisticsStyle.jsx";
-import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities";
+import DateTimeUtilities from "../questionnaire/DateTimeUtilities";
 
 // A single statistic, displayed as a chart
 function Statistic(props) {
