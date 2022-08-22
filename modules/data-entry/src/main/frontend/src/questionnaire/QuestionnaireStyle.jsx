@@ -137,7 +137,8 @@ const questionnaireStyle = theme => ({
     range: {
         display: "flex",
         alignItems: "baseline",
-        "& .numberRange": {
+        flexWrap: "wrap",
+        "& .numberRangeLimit": {
            minWidth: "110px !important",
            width: "110px",
         },
@@ -152,7 +153,8 @@ const questionnaireStyle = theme => ({
         display: "none"
     },
     answerInstructions: {
-        margin: theme.spacing(-1,0,1),
+        margin: theme.spacing(-3,0,1),
+        padding: theme.spacing(1, 0),
     },
     thumbnail: {
         border: "1px solid " + theme.palette.divider,
