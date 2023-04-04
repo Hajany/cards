@@ -25,6 +25,7 @@ import { Checkbox, DialogActions, DialogContent, Divider, Stack, FormControl, Gr
   FormControlLabel, TextField, Typography, Button, IconButton, Tooltip } from "@mui/material";
 import DownloadIcon from '@mui/icons-material/FileDownload';
 
+import DateQuestionUtilities from "../questionnaire/DateQuestionUtilities.jsx";
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { AdapterLuxon } from "@mui/x-date-pickers/AdapterLuxon";
 import { LocalizationProvider } from '@mui/x-date-pickers';
@@ -63,6 +64,9 @@ const useStyles = makeStyles(theme => ({
     "& + .MuiTypography-root": {
       marginTop: theme.spacing(-2.5),
     },
+    answerDateField: {
+      width: "45%"
+    },
   },
 }));
 
@@ -84,8 +88,6 @@ function ExportButton(props) {
     columnSelectionMode: "exclude",
     statusSelectionMode: "status",
   }
-
-  const DATE_FORMAT = "yyyy/MM/dd hh:mm a";
 
   const [ open, setOpen ] = useState(false);
   // List of questions and sections to display in dropdown select to exclude/include
@@ -112,6 +114,8 @@ function ExportButton(props) {
   const [ createdBy, setCreatedBy ] = useState(null);
   const [ modifiedBy, setModifiedBy ] = useState(null);
 
+  const dateFormat = DateQuestionUtilities.VIEW_DATE_FORMAT;
+  const views = DateQuestionUtilities.getPickerViews(dateFormat);
   const [ createdAfter, setCreatedAfter ] = useState(null);
   const [ createdBefore, setCreatedBefore ] = useState(null);
   const [ modifiedAfter, setModifiedAfter ] = useState(null);
@@ -218,16 +222,16 @@ function ExportButton(props) {
     return (<LocalizationProvider dateAdapter={AdapterLuxon}>
               <DateTimePicker
                 label="Any date"
-                views={['year', 'month', 'day', 'hours', 'minutes']}
-                format={DATE_FORMAT}
+                views={views}
+                format={dateFormat}
                 value={value}
+                className={classes.answerDateField}
                 onChange={(value) => {
                   setter(value);
                 }}
                 componentsProps={{ textField: {
                                      variant: 'standard',
-                                     error: rangeIsInvalid,
-                                     helperText: rangeIsInvalid ? " " : DATE_FORMAT
+                                     error: rangeIsInvalid
                                    }
                 }}
               />
@@ -237,7 +241,7 @@ function ExportButton(props) {
 
   let getDateRange = (valueA, setterA, valueB, setterB, rangeIsInvalid) => {
     return (<>
-      <Stack direction="row" spacing={2} divider={<span>—</span>} className={classes.dateRange}>
+      <Stack direction="row" spacing={2} divider={<span>—</span>} className={classes.dateRange} justifyContent="space-between">
         { getDatePicker(valueA, setterA, rangeIsInvalid) }
         { getDatePicker(valueB, setterB, rangeIsInvalid) }
       </Stack>
