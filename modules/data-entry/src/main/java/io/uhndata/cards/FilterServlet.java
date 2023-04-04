@@ -159,21 +159,25 @@ public class FilterServlet extends SlingSafeMethodsServlet
     {
         JsonArrayBuilder builder = Json.createArrayBuilder();
         if (addQuestionnaireFilter) {
-            builder.add(generateMetadataFilter("Questionnaire"));
+            builder.add(generateMetadataFilter("Questionnaire", "Questionnaire", "questionnaire"));
         }
-        builder.add(generateMetadataFilter("Subject"));
-        builder.add(generateMetadataFilter("Created Date"));
+        builder.add(generateMetadataFilter("Subject", "Subject", "subject"));
+        builder.add(generateMetadataFilter("Created date", "Created", "datetime"));
+        builder.add(generateMetadataFilter("Created by", "CreatedBy", "user"));
+        builder.add(generateMetadataFilter("Last modification date", "LastModified", "datetime"));
+        builder.add(generateMetadataFilter("Last modified by", "LastModifiedBy", "user"));
+
         return builder;
     }
 
-    private JsonObjectBuilder generateMetadataFilter(final String text)
+    private JsonObjectBuilder generateMetadataFilter(final String text, final String path, final String dataType)
     {
         JsonObjectBuilder builder = Json.createObjectBuilder();
-        final String path = text.replace(" ", "");
+
         builder.add("@path", path);
         builder.add("jcr:uuid", "cards:" + path);
         builder.add("text", text);
-        builder.add("dataType", path.toLowerCase());
+        builder.add("dataType", dataType);
         return builder;
     }
 
